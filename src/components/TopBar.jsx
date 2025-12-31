@@ -38,7 +38,7 @@ export function TopBar({ filters, setFilter, onMenuClick }) {
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <h1 className="text-xl font-semibold text-[var(--navy)] hidden sm:block" style={{ fontFamily: 'Fraunces, Georgia, serif' }}>
-            Board Game Explorer
+            Board Game Cafe
           </h1>
         </div>
 

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useGames } from './hooks/useGames';
 import { useFilters } from './hooks/useFilters';
+import { useFavorites } from './hooks/useFavorites';
 import { filterGames } from './utils/filterGames';
 import { TopBar } from './components/TopBar';
 import { FilterSidebar } from './components/FilterSidebar';
@@ -11,12 +12,13 @@ import { LoadingState } from './components/LoadingState';
 function App() {
   const { games, loading, error } = useGames();
   const { filters, setFilter, toggleArrayFilter, clearFilters, hasActiveFilters } = useFilters();
+  const { favorites, favoriteCount, toggleFavorite, isFavorite } = useFavorites();
   const [selectedGame, setSelectedGame] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const filteredGames = useMemo(() => {
-    return filterGames(games, filters);
-  }, [games, filters]);
+    return filterGames(games, filters, favorites);
+  }, [games, filters, favorites]);
 
   if (error) {
     return (
@@ -46,6 +48,7 @@ function App() {
           hasActiveFilters={hasActiveFilters}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          favoriteCount={favoriteCount}
         />
 
         <main className="flex-1 min-h-[calc(100vh-64px)]">
@@ -71,8 +74,11 @@ function App() {
             <LoadingState />
           ) : (
             <GameGrid
+              key={filters.search + filters.sort + filters.showFavorites}
               games={filteredGames}
               onGameClick={setSelectedGame}
+              isFavorite={isFavorite}
+              onToggleFavorite={toggleFavorite}
             />
           )}
         </main>
@@ -82,6 +88,8 @@ function App() {
         <GameModal
           game={selectedGame}
           onClose={() => setSelectedGame(null)}
+          isFavorite={isFavorite(selectedGame.game_id)}
+          onToggleFavorite={toggleFavorite}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 import { GameCard } from './GameCard';
 
-export function GameGrid({ games, onGameClick }) {
+export function GameGrid({ games, onGameClick, isFavorite, onToggleFavorite }) {
   if (games.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -24,6 +24,8 @@ export function GameGrid({ games, onGameClick }) {
           key={game.game_id}
           game={game}
           onClick={() => onGameClick(game)}
+          isFavorite={isFavorite(game.game_id)}
+          onToggleFavorite={onToggleFavorite}
         />
       ))}
     </div>

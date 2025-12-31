@@ -35,7 +35,7 @@ const CATEGORY_OPTIONS = [
   'Medieval', 'Civilization',
 ];
 
-export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilters, hasActiveFilters, isOpen, onClose }) {
+export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilters, hasActiveFilters, isOpen, onClose, favoriteCount = 0 }) {
   return (
     <>
       {/* Mobile overlay */}
@@ -73,6 +73,38 @@ export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilt
             </button>
           </div>
 
+          {/* Favorites toggle */}
+          <button
+            onClick={() => setFilter('showFavorites', !filters.showFavorites)}
+            className={`w-full py-3 px-4 flex items-center justify-between rounded-lg border transition-all ${
+              filters.showFavorites
+                ? 'bg-red-50 border-red-200 text-red-700'
+                : 'bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-primary)] hover:border-red-300'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <svg
+                className="w-5 h-5"
+                fill={filters.showFavorites ? 'currentColor' : 'none'}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              <span className="font-medium">Favorites</span>
+            </span>
+            <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+              filters.showFavorites ? 'bg-red-200 text-red-800' : 'bg-[var(--bg-sidebar)] text-[var(--text-secondary)]'
+            }`}>
+              {favoriteCount}
+            </span>
+          </button>
+
           {/* Clear filters button */}
           {hasActiveFilters && (
             <button
@@ -82,45 +114,6 @@ export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilt
               Clear all filters
             </button>
           )}
-
-          {/* Rating Range */}
-          <div>
-            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-3">
-              Rating: {filters.ratingMin.toFixed(1)} - {filters.ratingMax.toFixed(1)}
-            </label>
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-[var(--text-tertiary)] w-6">Min</span>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  step="0.5"
-                  value={filters.ratingMin}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value);
-                    if (val < filters.ratingMax) setFilter('ratingMin', val);
-                  }}
-                  className="flex-1"
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-[var(--text-tertiary)] w-6">Max</span>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  step="0.5"
-                  value={filters.ratingMax}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value);
-                    if (val > filters.ratingMin) setFilter('ratingMax', val);
-                  }}
-                  className="flex-1"
-                />
-              </div>
-            </div>
-          </div>
 
           {/* Min Voters */}
           <div>
@@ -189,15 +182,15 @@ export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilt
             <label className="block text-sm font-semibold text-[var(--text-primary)] mb-3">
               Complexity
             </label>
-            <div className="flex gap-1 p-1 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg">
+            <div className="flex flex-wrap gap-2">
               {WEIGHT_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
                   onClick={() => toggleArrayFilter('weight', opt.value)}
-                  className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${
                     filters.weight.includes(opt.value)
-                      ? 'bg-[var(--navy)] text-white'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      ? 'bg-[var(--navy)] text-white border-[var(--navy)]'
+                      : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--navy)]'
                   }`}
                 >
                   {opt.label}

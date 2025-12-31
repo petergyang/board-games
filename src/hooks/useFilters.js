@@ -10,6 +10,7 @@ const DEFAULT_FILTERS = {
   weight: ['light', 'medium', 'heavy'],
   categories: [],
   sort: 'rating-desc',
+  showFavorites: false,
 };
 
 function getFiltersFromURL() {
@@ -24,6 +25,7 @@ function getFiltersFromURL() {
     weight: params.getAll('weight').length ? params.getAll('weight') : DEFAULT_FILTERS.weight,
     categories: params.getAll('cat').length ? params.getAll('cat') : DEFAULT_FILTERS.categories,
     sort: params.get('sort') || DEFAULT_FILTERS.sort,
+    showFavorites: params.get('favorites') === 'true',
   };
 }
 
@@ -41,6 +43,7 @@ function filtersToURL(filters) {
   }
   filters.categories.forEach(c => params.append('cat', c));
   if (filters.sort !== DEFAULT_FILTERS.sort) params.set('sort', filters.sort);
+  if (filters.showFavorites) params.set('favorites', 'true');
 
   return params.toString();
 }

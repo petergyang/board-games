@@ -1,4 +1,4 @@
-export function GameCard({ game, onClick }) {
+export function GameCard({ game, onClick, isFavorite, onToggleFavorite }) {
   const formatPlaytime = (min, max) => {
     if (min === max) return `${min}m`;
     return `${min}-${max}m`;
@@ -7,6 +7,11 @@ export function GameCard({ game, onClick }) {
   const formatPlayers = (min, max) => {
     if (min === max) return `${min}`;
     return `${min}-${max}`;
+  };
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    onToggleFavorite?.(game.game_id);
   };
 
   return (
@@ -26,6 +31,30 @@ export function GameCard({ game, onClick }) {
             e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23EDE8DC" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%238C8C8C" font-size="12">No Image</text></svg>';
           }}
         />
+        {/* Favorite button */}
+        <button
+          onClick={handleFavoriteClick}
+          className={`absolute top-1 left-1 sm:top-2 sm:left-2 p-1 sm:p-1.5 rounded-full transition-all duration-200 ${
+            isFavorite
+              ? 'bg-red-500 text-white shadow-md'
+              : 'bg-[var(--bg-card)]/80 text-[var(--text-tertiary)] hover:bg-[var(--bg-card)] hover:text-red-500'
+          }`}
+          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <svg
+            className="w-3.5 h-3.5 sm:w-4 sm:h-4"
+            fill={isFavorite ? 'currentColor' : 'none'}
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+        </button>
         {/* Rating badge */}
         <div className={`absolute top-1 right-1 sm:top-2 sm:right-2 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm font-bold ${
           game.average_rating >= 8

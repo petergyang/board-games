@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function GameModal({ game, onClose }) {
+export function GameModal({ game, onClose, isFavorite, onToggleFavorite }) {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') onClose();
@@ -35,16 +35,43 @@ export function GameModal({ game, onClose }) {
         className="relative w-full max-w-3xl max-h-[90vh] bg-[var(--bg-card)] rounded-2xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-[var(--bg-card)]/80 hover:bg-[var(--bg-card)] rounded-full transition-colors shadow-md"
-          aria-label="Close"
-        >
-          <svg className="w-5 h-5 text-[var(--text-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        {/* Action buttons */}
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+          {/* Favorite button */}
+          <button
+            onClick={() => onToggleFavorite?.(game.game_id)}
+            className={`p-2 rounded-full transition-all duration-200 shadow-md ${
+              isFavorite
+                ? 'bg-red-500 text-white hover:bg-red-600'
+                : 'bg-[var(--bg-card)]/80 hover:bg-[var(--bg-card)] text-[var(--text-tertiary)] hover:text-red-500'
+            }`}
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <svg
+              className="w-5 h-5"
+              fill={isFavorite ? 'currentColor' : 'none'}
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+          </button>
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="p-2 bg-[var(--bg-card)]/80 hover:bg-[var(--bg-card)] rounded-full transition-colors shadow-md"
+            aria-label="Close"
+          >
+            <svg className="w-5 h-5 text-[var(--text-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
         <div className="overflow-y-auto max-h-[90vh]">
           {/* Header with image */}

@@ -1,6 +1,11 @@
-export function filterGames(games, filters) {
+export function filterGames(games, filters, favorites = []) {
   return games
     .filter(game => {
+      // Favorites filter
+      if (filters.showFavorites && !favorites.includes(game.game_id)) {
+        return false;
+      }
+
       // Search by name
       if (filters.search && !game.name.toLowerCase().includes(filters.search.toLowerCase())) {
         return false;
