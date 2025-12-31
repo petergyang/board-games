@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 const VOTER_OPTIONS = [
   { value: 1000, label: '1K+' },
   { value: 5000, label: '5K+' },
@@ -29,13 +31,21 @@ const WEIGHT_OPTIONS = [
   { value: 'heavy', label: 'Heavy' },
 ];
 
-const CATEGORY_OPTIONS = [
-  'Strategy', 'Economic', 'Adventure', 'Fantasy', 'Science Fiction',
-  'Card Game', 'Cooperative', 'Wargame', 'Party Game', 'Puzzle',
-  'Medieval', 'Civilization',
-];
-
-export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilters, hasActiveFilters, isOpen, onClose, favoriteCount = 0 }) {
+export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilters, hasActiveFilters, isOpen, onClose, favoriteCount = 0, games = [] }) {
+  // Generate categories from actual game data
+  const availableCategories = useMemo(() => {
+    const categoryCount = {};
+    games.forEach(game => {
+      (game.categories || []).forEach(cat => {
+        categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+      });
+    });
+    // Sort by count descending, take top 12
+    return Object.entries(categoryCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 12)
+      .map(([cat]) => cat);
+  }, [games]);
   return (
     <>
       {/* Mobile overlay */}
@@ -205,7 +215,7 @@ export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilt
               Categories
             </label>
             <div className="flex flex-wrap gap-2">
-              {CATEGORY_OPTIONS.map(cat => (
+              {availableCategories.map(cat => (
                 <button
                   key={cat}
                   onClick={() => toggleArrayFilter('categories', cat.toLowerCase())}

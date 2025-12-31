@@ -49,6 +49,7 @@ function App() {
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           favoriteCount={favoriteCount}
+          games={games}
         />
 
         <main className="flex-1 min-h-[calc(100vh-64px)]">
