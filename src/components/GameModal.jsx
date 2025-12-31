@@ -39,7 +39,7 @@ export function GameModal({ game, onClose, isFavorite, onToggleFavorite }) {
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
           {/* Favorite button */}
           <button
-            onClick={() => onToggleFavorite?.(game.game_id)}
+            onClick={() => onToggleFavorite?.(game.uid)}
             className={`p-2 rounded-full transition-all duration-200 shadow-md ${
               isFavorite
                 ? 'bg-red-500 text-white hover:bg-red-600'

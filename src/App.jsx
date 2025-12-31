@@ -89,7 +89,7 @@ function App() {
         <GameModal
           game={selectedGame}
           onClose={() => setSelectedGame(null)}
-          isFavorite={isFavorite(selectedGame.game_id)}
+          isFavorite={isFavorite(selectedGame.uid)}
           onToggleFavorite={toggleFavorite}
         />
       )}

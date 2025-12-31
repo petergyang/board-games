@@ -2,7 +2,7 @@ export function filterGames(games, filters, favorites = []) {
   return games
     .filter(game => {
       // Favorites filter
-      if (filters.showFavorites && !favorites.includes(game.game_id)) {
+      if (filters.showFavorites && !favorites.includes(game.uid)) {
         return false;
       }
 

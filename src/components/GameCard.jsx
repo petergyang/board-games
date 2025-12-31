@@ -11,7 +11,7 @@ export function GameCard({ game, onClick, isFavorite, onToggleFavorite }) {
 
   const handleFavoriteClick = (e) => {
     e.stopPropagation();
-    onToggleFavorite?.(game.game_id);
+    onToggleFavorite?.(game.uid);
   };
 
   return (

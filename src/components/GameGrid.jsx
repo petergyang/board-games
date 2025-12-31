@@ -21,10 +21,10 @@ export function GameGrid({ games, onGameClick, isFavorite, onToggleFavorite }) {
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-4 p-2 sm:p-4 lg:p-6">
       {games.map(game => (
         <GameCard
-          key={game.game_id}
+          key={game.uid}
           game={game}
           onClick={() => onGameClick(game)}
-          isFavorite={isFavorite(game.game_id)}
+          isFavorite={isFavorite(game.uid)}
           onToggleFavorite={onToggleFavorite}
         />
       ))}
