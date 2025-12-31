@@ -62,12 +62,12 @@ export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilt
           fixed lg:sticky top-0 left-0 z-50 lg:z-30
           h-screen lg:h-[calc(100vh-64px)] w-72 lg:w-[280px]
           bg-[var(--bg-sidebar)] border-r border-[var(--border)]
-          overflow-y-auto
+          overflow-y-auto flex flex-col
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-6 flex-1">
           {/* Mobile header */}
           <div className="flex items-center justify-between lg:hidden">
             <h2 className="text-lg font-semibold text-[var(--navy)]" style={{ fontFamily: 'Fraunces, Georgia, serif' }}>
@@ -230,6 +230,21 @@ export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilt
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-[var(--border)] text-center">
+          <span className="text-xs text-[var(--text-secondary)]">
+            Made with ❤️ by{' '}
+            <a
+              href="https://www.youtube.com/@peteryangyt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--navy)] hover:underline font-medium"
+            >
+              Peter Yang
+            </a>
+          </span>
         </div>
       </aside>
     </>

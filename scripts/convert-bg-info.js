@@ -4,7 +4,8 @@ import https from 'https';
 const CSV_PATH = '/Users/pyang/Downloads/bg_info.csv';
 const OLD_CSV_PATH = '/Users/pyang/Downloads/board_games.csv';
 const OUTPUT_PATH = './public/data/games.json';
-const TOP_N = 1000;
+const TOP_BY_RATING = 1000;
+const TOP_BY_POPULARITY = 300;
 const CONCURRENT_REQUESTS = 3;
 
 // Build a name -> game_id map from the old CSV (which has game IDs)
@@ -220,13 +221,25 @@ async function main() {
     };
   });
 
-  // Filter and sort by geek rating (BGG's bayesian rating)
-  const topGames = games
-    .filter(g => g.numVoters >= 1000 && g.year >= 1980)
-    .sort((a, b) => b.geekRating - a.geekRating)
-    .slice(0, TOP_N);
+  // Filter games with minimum voters
+  const eligibleGames = games.filter(g => g.numVoters >= 500 && g.year >= 1980);
 
-  console.log(`Selected top ${topGames.length} games by rating`);
+  // Top games by rating
+  const topByRating = [...eligibleGames]
+    .sort((a, b) => b.geekRating - a.geekRating)
+    .slice(0, TOP_BY_RATING);
+
+  // Top games by popularity (voters) not already in rating list
+  const ratingTitles = new Set(topByRating.map(g => g.title));
+  const topByPopularity = [...eligibleGames]
+    .filter(g => !ratingTitles.has(g.title))
+    .sort((a, b) => b.numVoters - a.numVoters)
+    .slice(0, TOP_BY_POPULARITY);
+
+  // Combine both lists
+  const topGames = [...topByRating, ...topByPopularity];
+
+  console.log(`Selected ${topByRating.length} by rating + ${topByPopularity.length} by popularity = ${topGames.length} total`);
   console.log(`Year range: ${Math.min(...topGames.map(g => g.year))} - ${Math.max(...topGames.map(g => g.year))}`);
 
   // Step 1: Find game IDs - first from map, then search BGG for missing ones
@@ -283,26 +296,32 @@ async function main() {
   // Step 3: Build final output
   const output = gamesWithDetails
     .filter(g => g.details && g.details.thumbnail)
-    .map(g => ({
-      game_id: parseInt(g.gameId),
-      name: g.title,
-      year_published: g.year,
-      min_players: g.minPlayers,
-      max_players: g.maxPlayers,
-      min_playtime: g.minTime,
-      max_playtime: g.maxTime,
-      min_age: g.minAge,
-      geek_rating: g.geekRating,
-      average_rating: g.avgRating,
-      users_rated: g.numVoters,
-      weight: deriveWeight(g.complexity),
-      complexity: g.complexity,
-      thumbnail: g.details.thumbnail,
-      image: g.details.image || g.details.thumbnail,
-      description: g.details.description || `${g.title} is a board game published in ${g.year}.`,
-      categories: [g.type1, g.type2].filter(Boolean),
-      mechanics: []
-    }));
+    .map(g => {
+      const slug = g.title.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+      return {
+        game_id: parseInt(g.gameId),
+        name: g.title,
+        year_published: g.year,
+        min_players: g.minPlayers,
+        max_players: g.maxPlayers,
+        min_playtime: g.minTime,
+        max_playtime: g.maxTime,
+        min_age: g.minAge,
+        geek_rating: g.geekRating,
+        average_rating: g.avgRating,
+        users_rated: g.numVoters,
+        weight: deriveWeight(g.complexity),
+        complexity: g.complexity,
+        thumbnail: g.details.thumbnail,
+        image: g.details.image || g.details.thumbnail,
+        description: g.details.description || `${g.title} is a board game published in ${g.year}.`,
+        categories: [g.type1, g.type2].filter(Boolean),
+        mechanics: [],
+        uid: `${g.gameId}-${g.year}-${slug}`
+      };
+    });
 
   console.log(`\nWriting ${output.length} games to ${OUTPUT_PATH}`);
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
