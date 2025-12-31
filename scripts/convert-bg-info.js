@@ -221,8 +221,8 @@ async function main() {
     };
   });
 
-  // Filter games with minimum voters
-  const eligibleGames = games.filter(g => g.numVoters >= 500 && g.year >= 1980);
+  // Filter games with minimum voters (no year filter to include classics like Monopoly)
+  const eligibleGames = games.filter(g => g.numVoters >= 500);
 
   // Top games by rating
   const topByRating = [...eligibleGames]
