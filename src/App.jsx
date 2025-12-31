@@ -74,7 +74,7 @@ function App() {
             <LoadingState />
           ) : (
             <GameGrid
-              key={filters.search + filters.sort + filters.showFavorites}
+              key={JSON.stringify(filters)}
               games={filteredGames}
               onGameClick={setSelectedGame}
               isFavorite={isFavorite}
